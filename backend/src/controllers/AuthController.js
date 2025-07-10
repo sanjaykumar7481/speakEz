@@ -2,6 +2,7 @@
 const User = require("../models/user");
 const jwt=require("jsonwebtoken")
 const bcrypt = require("bcrypt");
+const user = require("../models/user");
 const Register = async (req, res, next) => {
     try {
         // console.log("here")
@@ -9,7 +10,7 @@ const Register = async (req, res, next) => {
         const {first_name,email,password}=req.body;
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-          return res.status(400).json({ message: 'Email already exists',loggedin:false});
+          return res.status(200).json({ message: 'Email already exists',loggedin:false});
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         // Create a new User instance
@@ -62,8 +63,28 @@ const Login=async(req,res,next)=>{
     res.status(500).json({ error: 'Internal Server Error',loggedin:false});
   }
 }
+const ForgetPassword=async(req,res,next)=>{
+  try{
+    const {email,password}=req.body;
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      existingUser.password=hashedPassword;
+      existingUser.save();
+      return res.status(200).json({ message: 'Password Changed succesfully',passwordChanged:true});
+    }
+    else{
+      return res.status(200).json({ message: 'Email not exist',passwordChanged:false});
+    }
 
+  }
+  catch(err){
+    console.log(err);
+    return res.status(500).json({message:'server Error',passwordChanged:false});
+  }
+}
 module.exports = {
     Register,
-    Login
+    Login,
+    ForgetPassword
   };

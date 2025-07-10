@@ -8,7 +8,7 @@ const Footer = () => {
         <Container fluid={true}>
           <Row>
             <Col sm={12}>
-              © {new Date().getFullYear()} SpeakEZ <span className="d-none d-sm-inline-block"> - Crafted with <i className="mdi mdi-heart text-danger"></i> by Thub.</span>
+              © {new Date().getFullYear()} Verbal Edge <span className="d-none d-sm-inline-block"> </span>
             </Col>
           </Row>
         </Container>

@@ -7,6 +7,7 @@ import { setBreadcrumbItems } from "../../store/actions";
 import { connect } from "react-redux"
 import { useUser } from 'Authenticator/Usercontext';
 import { useNavigate } from 'react-router-dom';
+import { time } from 'echarts';
 const Speaktest = (props) => {
     const {user}=useUser();
     const navigator=useNavigate();
@@ -52,7 +53,7 @@ const Speaktest = (props) => {
 
             // Clear interval when timer reaches 0
             if (timer === 0) {
-                setLoadingResults(true);
+                // setLoadingResults(true);
                 handleSubmit();
                 clearInterval(interval);
             }
@@ -79,12 +80,12 @@ const Speaktest = (props) => {
     
 
     const handleSubmit = () => {
-        console.log("time over");
-        // setLoadingResults(true);
+        // console.log("time over",timer);
+        setLoadingResults(true);
         for (let i = 1; i <= 100; i++) {
             setTimeout(() => {
               setvalue_cur(i);
-            }, i * 50); // Increment value every 10 milliseconds
+            }, i * 100); // Increment value every 10 milliseconds
           }
           const singleParagraphResponse = userResponse.replace(/\n/g, ' ').trim();
         axios.post(`http://localhost:4000/ai/English-Score`, { userResponse:singleParagraphResponse })
@@ -130,7 +131,7 @@ const Speaktest = (props) => {
                 </div>
             )}
 
-            {testStarted && !loadingResults && (
+            {testStarted && !loadingResults && timer && (
                 question === '' ? (
                     <div className="text-center mt-4">
                         <Spinner color="primary" className='mb-2' />
@@ -165,7 +166,7 @@ const Speaktest = (props) => {
                 )
             )}
 
-            {loadingResults && !results && (
+            {(timer===0 || loadingResults)  && !results && (
                 <div className="overlay">
                 <div className="text-center" dir="ltr">
                   <h5 className="font-size-14 mb-3">Loading results</h5>
@@ -184,9 +185,6 @@ const Speaktest = (props) => {
               </div>
             )}
 
-            {results &&(
-                <>
-               
                {results && (
   <>
                     <div className='d-flex justify-content-between'>
@@ -199,7 +197,7 @@ const Speaktest = (props) => {
                         </ul>
                     </div>
                     
-                    <CollapsibleList
+                    {/* <CollapsibleList
                         items={results.partsOfSpeech.NOUN}
                         title="Nouns"
                     />
@@ -218,7 +216,7 @@ const Speaktest = (props) => {
                         items={results.partsOfSpeech.VERB}
                         title="Verbs"
                     />
-                    
+                     */}
                     </div>
                     <div className='mt-3'>
                     <Card>
@@ -237,9 +235,7 @@ const Speaktest = (props) => {
                     </>
                     )}
 
-                    
-                </>
-            )}
+                
         </div>
             
             

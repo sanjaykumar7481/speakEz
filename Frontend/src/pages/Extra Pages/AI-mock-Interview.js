@@ -84,16 +84,16 @@ const ResumeParser = (props) => {
         }
       });
 
-      const { ApplicantName } = response.data;
+      const { CandidateName } = response.data;
       // console.log(response.data);
       setParsedData({
-        'ApplicantName': `${ApplicantName.first} ${ApplicantName.middle} ${ApplicantName.last}`,
+        'ApplicantName': `${CandidateName.first} ${CandidateName.middle} ${CandidateName.last}`,
         'JobRole': response.data.CurrentJobRole,
         'JobSkills': response.data.Skills
       });
       if (response.data){
         setParsed(true);
-        // console.log(parsedData);
+        console.log(parsedData);
       } 
     } catch (error) {
       console.error('Error:', error);
@@ -112,31 +112,33 @@ const ResumeParser = (props) => {
       {
     const questionsArray = [];
     try {
-      while(questionsArray.length===0)
-      {
-      // console.log(parsedData);
+      // while(questionsArray.length===0)
+      // {
+      //console.log(parsedData);
       const response = await axios.post(`http://localhost:4000/ai/getquestions`, parsedData,{
         onUploadProgress: progressEvent => {
           const progress = (progressEvent.loaded / progressEvent.total) * 100;
           setquestionprogress(progress)
         }
       });
-
-      const questionRegex = /\*\*Question \d+:(.*?)(?=\n\*\*Question|$)/gs;
-      let match;
-      while ((match = questionRegex.exec(response.data.msg)) !== null) {
-        questionsArray.push(match[1].trim());
-      }
-      // console.log(response.data.msg);
-      setQuestions(questionsArray);
+      //console.log(response.data.msg);
+      let temp=response.data.msg;
+      temp = temp.replace(/^```(?:json)?|```$/g,'').trim();
+      temp=temp.replace("```","");
+      console.log(temp);
+      // Regular expression to remove the name part
+      const cleanquestionsArray = JSON.parse(temp);
+      console.log(cleanquestionsArray);
+      // Extract only the questions
+      setQuestions(cleanquestionsArray);
       setListeningStates(new Array(questionsArray.length).fill(false))
       setSubmittedAnswers(Array(questionsArray.length).fill(false));
       setAnswers(new Array(questionsArray.length).fill('')); // Initialize answers array
       if(questionsArray.length>0){
-        // console.log(questionsArray)
+        console.log(questionsArray)
         setwaitingquestions(false)
       }
-    }
+    // }
    } catch (err) {
       console.log(err);
     }
@@ -175,7 +177,7 @@ const ResumeParser = (props) => {
     if (listening && transcript!=='') {
       handleAnswerChange(Index, transcript);
     }
-    // console.log(transcript);
+    //console.log(transcript);
   }, [listening, transcript, Index]);
   
   const SubmitAnswers = async ()=>{
@@ -199,9 +201,10 @@ const ResumeParser = (props) => {
       }, {
           headers: {
               'Content-Type': 'application/json',
-              'Ocp-Apim-Subscription-Key': '4e8688829a394610b094d8a1d5564abc'
+              'Ocp-Apim-Subscription-Key': 'EEnQyxkj20MZ3dDQB54kgcw0DbZAHx5CLRSGuSxnI9PEswEKyCyhJQQJ99BBACYeBjFXJ3w3AAAaACOGFbN5'
           }
       });
+      console.log(response.data);
       const totalCount = response.data.documents.length;
 
 response.data.documents.forEach(value => {
@@ -224,7 +227,7 @@ setneutralScore(prevNeutralScore =>parseInt(prevNeutralScore * 100))
   return (
     <>
       {showChart?<>
-      {positiveScore==0?<>
+      {positiveScore==0 && negativeScore==0 && neutralScore==0?<>
       <div className="overlay">
           <div className="text-center" dir="ltr">
             <h5 className="font-size-14 mb-3">Loading results</h5>
@@ -326,6 +329,7 @@ setneutralScore(prevNeutralScore =>parseInt(prevNeutralScore * 100))
                         value={answers[index]}
                         disabled={submittedAnswers[index]}
                         onChange={(e) => handleAnswerChange(index, e.target.value)}
+                        required='true'
                       />
                       <div className='d-flex justify-content-between'>
                       <Button 

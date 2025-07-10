@@ -38,7 +38,7 @@ const Register = props => {
       // dispatch(registerUser(values));
       try {
         console.log(values);
-        const response = await axios.post(`${process.env.ENDPOINT}/auth/register`, values);
+        const response = await axios.post(`http://localhost:4000/auth/register`, values);
         if (response.data.loggedin) {
           setlogin(true);
           navigate('/login');
@@ -47,7 +47,7 @@ const Register = props => {
         }
       } catch (error) {
         // Handle error
-        console.error("Registration error:", error);
+        console.error("Registration error: occured", error);
         setRegistrationError("An error occurred during registration. Please try again later.");
       }
     }
@@ -65,13 +65,13 @@ const Register = props => {
                             <CardBody className="pt-0">
                                 <h3 className="text-center mt-5 mb-4">
                                     <Link to="/" className="d-block auth-logo">
-                                        <img src={logoDark} alt="" height="30" className="auth-logo-dark" />
-                                        <img src={logoLight} alt="" height="30" className="auth-logo-light" />
+                                        {/* <img src={logoDark} alt="" height="30" className="auth-logo-dark" />
+                                        <img src={logoLight} alt="" height="30" className="auth-logo-light" /> */}
                                     </Link>
                                 </h3>
                                 <div className="p-3">
                                     <h4 className="text-muted font-size-18 mb-1 text-center">Free Register</h4>
-                                    <p className="text-muted text-center">Get your free SpeakEZ account now.</p>
+                                    <p className="text-muted text-center">Get your free Verbal account now.</p>
                                     <Form
                                       className="form-horizontal mt-4"
                                       onSubmit={(e) => {
@@ -80,13 +80,13 @@ const Register = props => {
                                         return false;
                                       }}
                                     >
-                                      {loggedin && loggedin ? (
+                                      {loggedin ? (
                                         <Alert color="success">
                                           Register User Successfully
                                         </Alert>
                                       ) : null}
 
-                                      {registrationError && registrationError ? (
+                                      {registrationError ? (
                                         <Alert color="danger">{registrationError}</Alert>
                                       ) : null}
 
@@ -154,7 +154,7 @@ const Register = props => {
 
                                         <div className="mb-0 row">
                                             <div className="col-12 mt-4">
-                                                <p className="text-muted mb-0 font-size-14">By registering you agree to the SpeakEZ <Link to="#" className="text-primary">Terms of Use</Link></p>
+                                                <p className="text-muted mb-0 font-size-14">By registering you agree to the VerbalEdge <Link to="#" className="text-primary">Terms of Use</Link></p>
                                             </div>
                                         </div>
                                     </Form>
@@ -163,7 +163,7 @@ const Register = props => {
                         </Card>
                         <div className="mt-5 text-center">
                             <p>Already have an account ? <Link to="/login" className="text-primary"> Login </Link> </p>
-                            © <script>document.write(new Date().getFullYear())</script> SpeakEZ <span className="d-none d-sm-inline-block"> - Crafted with <i className="mdi mdi-heart text-danger"></i> </span>
+                            © <script>document.write(new Date().getFullYear())</script> VerbalEdge <span className="d-none d-sm-inline-block">  </span>
                         </div>
                     </Col>
                 </Row>

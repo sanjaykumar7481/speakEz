@@ -17,18 +17,20 @@ import WidgetUser from "./widget-user";
 import YearlySales from "./yearly-sales";
 import LatestTransactions from "./latest-transactions";
 import LatestOrders from "./latest-orders";
-
+import {Alert} from "reactstrap";
 //Import Action to copy breadcrumb items from local state to redux state
 import { setBreadcrumbItems } from "../../store/actions";
 import { useUser } from "Authenticator/Usercontext";
 const Dashboard = (props) => {
  const {user}=useUser();
   const [isLoading, setIsLoading] = useState(true);
+  const [loggedin,setLoggedin]=useState(false);
 
   document.title = "Dashboard";
 
   useEffect(() => {
     if (user) {
+      setLoggedin(true);
       setIsLoading(false);
     }
   }, [user]);
@@ -54,7 +56,7 @@ const Dashboard = (props) => {
 
   return (
     <React.Fragment>
-
+       {/* <Alert color="success" >{"Logged in  Successfull"}</Alert>  */}
       {/*mimi widgets */}
       <Miniwidget reports={reports} />
 

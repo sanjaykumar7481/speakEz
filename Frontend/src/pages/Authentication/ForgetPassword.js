@@ -1,23 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from "prop-types";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { Alert, Card, CardBody, Col, Container, FormFeedback, Input, Label, Row } from 'reactstrap';
 import logoDark from "../../assets/images/logo-dark.png";
 import logoLight from "../../assets/images/logo-light.png";
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from "reselect";
+import { useNavigate } from 'react-router-dom';
 import withRouter from 'components/Common/withRouter';
 // Formik Validation
 import * as Yup from "yup";
 import { useFormik } from "formik";
-
 // action
 import { userForgetPassword } from "../../store/actions";
 
 const ForgetPasswordPage = props => {
-  document.title = "Forget Password | Lexa - Responsive Bootstrap 5 Admin Dashboard";
+  document.title = "Forget Password | Verbal - Responsive Bootstrap 5 Admin Dashboard";
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const [error,seterror]=useState(null);
+  const [passwordChangedmsg,setpasswordChangedmsg]=useState(null);
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -29,10 +34,26 @@ const ForgetPasswordPage = props => {
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
     }),
-    onSubmit: (values) => {
-      dispatch(userForgetPassword(values, props.history));
-    }
-  });
+    onSubmit:async (values) => {
+      try{
+        const response=await axios.post(`http://localhost:4000/auth/ForgetPassword`,values);
+        const passwordChanged=response.data.passwordChanged;
+        if(!passwordChanged){
+          seterror(response.data.message);
+          setpasswordChangedmsg(null);
+        }
+        else{
+          seterror(null);
+          setpasswordChangedmsg(response.data.message);
+          // navigate('/login');
+        }
+      }
+      catch(err){
+        console.log(err);
+      }
+      
+  }
+});
 
 
   const selectForgotPasswordState = (state) => state.ForgetPassword;
@@ -59,20 +80,20 @@ const ForgetPasswordPage = props => {
                 <CardBody className="pt-0">
                   <h3 className="text-center mt-5 mb-4">
                     <Link to="/" className="d-block auth-logo">
-                      <img src={logoDark} alt="" height="30" className="auth-logo-dark" />
-                      <img src={logoLight} alt="" height="30" className="auth-logo-light" />
+                      {/* <img src={logoDark} alt="" height="30" className="auth-logo-dark" />
+                      <img src={logoLight} alt="" height="30" className="auth-logo-light" /> */}
                     </Link>
                   </h3>
                   <div className="p-3">
                     <h4 className="text-muted font-size-18 mb-3 text-center">Reset Password</h4>
-                    {forgetError && forgetError ? (
+                    {error ? (
                       <Alert color="danger" style={{ marginTop: "13px" }}>
-                        {forgetError}
+                        {error}
                       </Alert>
                     ) : null}
-                    {forgetSuccessMsg ? (
+                    {passwordChangedmsg ? (
                       <Alert color="success" style={{ marginTop: "13px" }}>
-                        {forgetSuccessMsg}
+                        {passwordChangedmsg}
                       </Alert>
                     ) : null}
                     <form className="form-horizontal mt-4"
@@ -101,6 +122,41 @@ const ForgetPasswordPage = props => {
                         ) : null}
                       </div>
 
+                      {/* <div className="mb-3">
+                        <Label htmlFor="useremail">Code </Label>
+                        <Input
+                          name="code"
+                          className="form-control"
+                          placeholder="Enter email"
+                          type="text"
+                          onChange={validation.handleChange}
+                          onBlur={validation.handleBlur}
+                          value={validation.values.code || ""}
+                          invalid={
+                            validation.touched.code && validation.errors.code? true : false
+                          }
+                        />
+                        {validation.touched.code && validation.errors.code ? (
+                          <FormFeedback type="invalid">{validation.errors.code}</FormFeedback>
+                        ) : null}
+                      </div> */}
+                        <div className="mb-3">
+                      <Label htmlFor="userpassword">New Password</Label>
+                      <Input
+                        name="password"
+                        value={validation.values.password || ""}
+                        type="password"
+                        placeholder="Enter Password"
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        invalid={
+                          validation.touched.password && validation.errors.password ? true : false
+                        }
+                      />
+                      {validation.touched.password && validation.errors.password ? (
+                        <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
+                      ) : null}
+                    </div>
                       <Row className="mb-3">
                         <div className="col-12 text-end">
                           <button className="btn btn-primary w-md waves-effect waves-light" type="submit">Reset</button>
@@ -112,7 +168,7 @@ const ForgetPasswordPage = props => {
               </Card>
               <div className="mt-5 text-center">
                 <p>Remember It ? <Link to="/login" className="text-primary"> Sign In Here </Link> </p>
-                © {new Date().getFullYear()} Lexa <span className="d-none d-sm-inline-block"> - Crafted with <i className="mdi mdi-heart text-danger"></i> by Themesbrand.</span>
+                © {new Date().getFullYear()} VerbalEdge <span className="d-none d-sm-inline-block"> </span>
               </div>
             </Col>
           </Row>

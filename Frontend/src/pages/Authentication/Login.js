@@ -13,7 +13,7 @@ import axios from 'axios';
 import { useUser } from 'Authenticator/Usercontext';
 
 const Login = (props) => {
-  document.title = "Login | SpeakEZ";
+  document.title = "Login | VerbalEdge";
   const navigate=useNavigate();
   const {setUser}=useUser();
   const [error,seterror]=useState(null)
@@ -30,7 +30,7 @@ const Login = (props) => {
     }),
     onSubmit: async(values) => {
       // console.log(values);
-      console.log(process.env.ENDPOINT)
+      // console.log(process.env.ENDPOINT)
       const response=await axios.post(`http://localhost:4000/auth/login`,values);
       if(response.data.loggedin)
       {
@@ -64,12 +64,12 @@ const Login = (props) => {
                 <CardBody className="pt-0">
                   <h3 className="text-center mt-5 mb-4">
                     <Link to="/" className="d-block auth-logo">
-                      <img src={logoDark} alt="" height="30" className="auth-logo-dark" />
+                      {/* <img src={logoDark} alt="" height="30" className="auth-logo-dark" /> */}
                     </Link>
                   </h3>
                   <div className="p-3">
                     <h4 className="text-muted font-size-18 mb-1 text-center">Welcome Back !</h4>
-                    <p className="text-muted text-center">Sign in to continue to SpeakEZ</p>
+                    <p className="text-muted text-center">Sign in to continue to VerbalEdge</p>
                     <Form
                       className="form-horizontal mt-4"
                       onSubmit={(e) => {
@@ -135,7 +135,7 @@ const Login = (props) => {
               </Card>
               <div className="mt-5 text-center">
                 <p>Don't have an account ? <Link to="/register" className="text-primary"> Signup Now </Link></p>
-                © {new Date().getFullYear()} SpeakEZ <span className="d-none d-sm-inline-block"> - Crafted with <i className="mdi mdi-heart text-danger"></i></span>
+                © {new Date().getFullYear()} VerbalEdge <span className="d-none d-sm-inline-block"> </span>
               </div>
             </Col>
           </Row>

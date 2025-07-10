@@ -13,11 +13,11 @@ import { connect } from "react-redux";
 import { setBreadcrumbItems } from "../../store/actions";
 
 const IconIon = props => {
-  document.title = "Ion Icon | Lexa - Responsive Bootstrap 5 Admin Dashboard";
+  document.title = "Verbal Edge";
   
 
   const breadcrumbItems = [
-    { title: "Lexa", link: "#" },
+    { title: "Verbal Edge", link: "#" },
     { title: "Icons", link: "#" },
     { title: "Ion Icons", link: "#" },
   ]
